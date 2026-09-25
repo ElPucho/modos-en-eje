@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b101b">
+  <meta name="description" content="Practica cambios de modos y tonalidades con metrónomo, voz y acompañamiento.">
+  <title>Modos en eje · práctica de improvisación</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230b101b'/%3E%3Ccircle cx='32' cy='32' r='21' fill='none' stroke='%235fd8c0' stroke-width='5'/%3E%3Cpath d='M32 12v20l14 9' fill='none' stroke='%23f6c96b' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./extras.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">◉</span><span>MODOS <strong>EN EJE</strong></span></div>
+      <span class="header-note">Laboratorio de improvisación</span>
+    </header>
+
+    <main class="layout">
+      <section class="play-card" aria-labelledby="play-title">
+        <div class="play-header"><span class="eyebrow">SESIÓN DE PRÁCTICA</span><span id="status-pill" class="status-pill">LISTO PARA TOCAR</span></div>
+        <div class="stage">
+          <div class="stage-label" id="stage-label">Tónica actual</div>
+          <div class="current-tonic" id="current-tonic">Do</div>
+          <h1 id="play-title"><span id="current-mode">Jónico</span></h1>
+          <div id="current-family" class="family-caption">Diatonismo · 7 notas</div>
+          <div id="notes" class="notes" aria-label="Notas del modo"></div>
+          <p id="mode-hint" class="mode-hint">Los cambios llegarán por sorpresa al inicio de un compás.</p>
+        </div>
+        <div class="beat-zone">
+          <div class="beat-topline"><span id="meter-readout">4/4</span><span id="bar-readout">Compás 0</span><span id="bpm-readout">100 BPM</span></div>
+          <div id="beat-lights" class="beat-lights" aria-label="Pulsos del compás"></div>
+        </div>
+        <div class="transport">
+          <button id="start-button" class="start-button" type="button">▶ <span>Empezar práctica</span></button>
+          <button id="pause-button" class="icon-button" type="button" aria-label="Pausar" disabled><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="5" y="3" width="5" height="18" rx="1.5"/><rect x="14" y="3" width="5" height="18" rx="1.5"/></svg></button>
+          <button id="next-button" class="icon-button" type="button" aria-label="Cambiar en el próximo compás" disabled>⇥</button>
+        </div>
+        <div class="session-foot"><span id="elapsed">00:00</span><span id="change-count">0 cambios</span><button id="repeat-button" type="button" class="text-button" disabled>↻ Priorizar este modo</button></div>
+      </section>
+
+      <section class="panel" data-section="setup" aria-labelledby="setup-title">
+          <div class="section-heading"><div><span class="eyebrow">AJUSTES</span><h2 id="setup-title">Prepara tu sesión</h2></div><button id="reset-button" type="button" class="text-button">Restablecer</button></div>
+
+          <div class="field-block"><div class="field-head"><label>Tónica</label><span class="field-note">Orden de la rueda de quintas</span></div><div id="tonic-list" class="tonic-list" role="group" aria-label="Tónica"></div></div>
+
+          <div class="two-cols">
+            <label class="select-field">Recorrido de tónicas<select id="tonic-route"><option value="fixed">Mantener tónica</option><option value="circle">Avanzar por quintas</option><option value="random">Tónica aleatoria</option></select></label>
+            <label class="number-field">Cambiar tónica cada <span class="input-suffix"><input id="root-every" type="number" min="1" max="32" value="4" inputmode="numeric"><span>modos</span></span></label>
+          </div>
+
+          <div class="field-block"><div class="field-head"><label>Familia</label></div><div class="segmented" role="group" aria-label="Familia de modos"><button id="family-diatonic" type="button" class="selected">Diatonismo <small>7 modos</small></button><button id="family-pentatonic" type="button">Pentatonismo <small>5 modos</small></button></div></div>
+
+          <div class="field-block"><div class="field-head"><label>Modos en la práctica</label><button id="select-all" type="button" class="text-button">Seleccionar todos</button></div><div id="mode-list" class="mode-list" role="group" aria-label="Modos incluidos"></div></div>
+        </section>
+
+        <section class="panel" data-section="rhythm" aria-labelledby="rhythm-title">
+          <div class="section-heading"><div><span class="eyebrow">RITMO</span><h2 id="rhythm-title">Pulso y cambios</h2></div></div>
+          <div class="bpm-control"><label for="bpm">Tempo <strong><output id="bpm-value">100</output> BPM</strong></label><input id="bpm" type="range" min="30" max="300" value="100"><div class="range-ends"><span>30</span><span>300</span></div></div>
+          <div class="meter-row"><label class="number-field">Compás <span class="fraction-input"><input id="meter-numerator" type="number" min="1" max="64" value="4" aria-label="Numerador del compás" inputmode="numeric"><span>/</span><input id="meter-denominator" type="number" min="1" max="64" value="4" aria-label="Denominador del compás" inputmode="numeric"></span></label><label class="number-field">Unidades por pulso<input id="pulse-group" type="number" min="1" max="16" value="1" inputmode="numeric"></label></div>
+          <p class="field-help">El BPM corresponde al pulso. En 6/8, agrupa 3 corcheas por pulso para sentir la negra con puntillo.</p>
+          <div class="two-cols"><label class="number-field">Cambio desde<input id="min-bars" type="number" min="1" max="64" value="4" inputmode="numeric"><small>compases</small></label><label class="number-field">Hasta<input id="max-bars" type="number" min="1" max="64" value="8" inputmode="numeric"><small>compases</small></label></div>
+          <label class="number-field min-seconds">Tiempo mínimo por modo <span class="input-suffix"><input id="min-seconds" type="number" min="0" max="120" value="10" inputmode="decimal"><span>segundos</span></span></label>
+          <label class="number-field min-seconds">Duración de la sesión <span class="input-suffix"><input id="session-minutes" type="number" min="0" max="180" value="0" inputmode="numeric"><span>min · 0 sin límite</span></span></label>
+        </section>
+
+        <section class="panel" data-section="sound" aria-labelledby="sound-title"><div class="section-heading"><div><span class="eyebrow">SONIDO</span><h2 id="sound-title">Escucha y acompaña</h2></div></div>
+          <div class="toggle-list">
+            <label class="toggle-row"><span><strong>Metrónomo</strong><small>Clic acentuado en el primer pulso</small></span><input id="click-enabled" type="checkbox" checked></label>
+            <label class="toggle-row"><span><strong>Voz</strong><small>Anuncia la tónica y el modo</small></span><input id="voice-enabled" type="checkbox" checked></label>
+            <label class="toggle-row"><span><strong>Batería de jazz</strong><small>Ride, caja y bombo con swing</small></span><input id="drums-enabled" type="checkbox"></label>
+            <label class="toggle-row"><span><strong>Pedal de tónica</strong><small>Referencia suave para el oído</small></span><input id="drone-enabled" type="checkbox"></label>
+          </div>
+          <div class="two-cols sound-sliders"><label class="range-field">Swing <output id="swing-value">66 %</output><input id="swing" type="range" min="50" max="75" value="66"></label><label class="range-field">Batería <output id="drum-volume-value">45 %</output><input id="drum-volume" type="range" min="0" max="100" value="45"></label></div>
+          <div class="voice-row"><label class="select-field">Voz en español<select id="voice-select"><option value="">Voz del navegador</option></select></label><button id="voice-test" type="button" class="secondary-button">Probar voz</button></div>
+        </section>
+      <section class="learning-card" data-section="fretboard" aria-labelledby="learning-title"><div class="section-heading"><div><span class="eyebrow">DIAPASÓN</span><h2 id="learning-title">Visualiza el modo</h2></div><div class="segmented compact" role="group" aria-label="Vista de práctica"><button id="view-guide" type="button" class="selected">Guía</button><button id="view-memory" type="button">Memoria</button><button id="view-ear" type="button">Oído</button></div></div><p id="learning-intro" class="learning-intro">Las notas iluminadas pertenecen al modo. La tónica aparece en dorado.</p><div id="fret-nav" class="fret-nav"><button id="fret-prev" type="button" aria-label="Trastes anteriores">←</button><span id="fret-range">Trastes 0–4</span><button id="fret-next" type="button" aria-label="Trastes siguientes">→</button></div><div id="fretboard-wrap" class="fretboard-wrap"><div id="fretboard" class="fretboard" role="img" aria-label="Diapasón de guitarra"></div></div><div id="formula" class="formula"></div></section>
+    </main>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <dialog id="formula-dialog" class="formula-dialog" aria-labelledby="formula-title"><form method="dialog"><div class="dialog-head"><div><span class="eyebrow">PENTATONISMO</span><h2 id="formula-title">Editar fórmula</h2></div><button id="formula-close" type="button" class="icon-button" aria-label="Cerrar">×</button></div><p>Elige la tónica y otras cuatro notas. La fórmula se aplicará a todas las tónicas.</p><div id="interval-grid" class="interval-grid" role="group" aria-label="Intervalos pentatónicos"></div><p id="formula-error" class="formula-error" role="alert"></p><div class="dialog-actions"><button id="formula-default" type="button" class="secondary-button">Fórmula original</button><button id="formula-save" type="button" class="start-button">Guardar fórmula</button></div></form></dialog>
+</body>
+</html>
